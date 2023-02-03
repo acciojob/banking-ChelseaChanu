@@ -1,33 +1,36 @@
 package com.driver;
 
+import java.util.*;
 
 public class BankAccount {
 
     private String name;
     private double balance;
     private double minBalance;
-    String accountNumber = "";
+    List<Integer> res = new ArrayList<>();
+
     public BankAccount(String name, double balance, double minBalance) {
         this.name = name;
         this.balance = balance;
         this.minBalance = minBalance;
     }
 
-    public void generate(int arr[],int digits, int sum, int currInd, String str){
-        if(sum<0)
-            return ;
-        if(sum==0){
-            if(str.length()==digits){
-                accountNumber = str;
-                return;
+    public void backtracking(int candidates[],int target,int rejected,ArrayList<Integer> list,int digits){
+        if(target<0)
+            return;
+        if(target==0){
+            if(list.size()==digits){
+                res.clear();
+                res = new ArrayList<>(list);
             }
+            else if(list.size()<digits && res.size()<list.size())
+                res = new ArrayList<>(list);
             return;
         }
-
-        for(int i=currInd;i<arr.length;i++){
-            str += arr[i];
-            generate(arr, digits, sum-arr[i], i, str);
-            str = str.substring(0, str.length()-1);
+        for(int i=rejected;i<candidates.length;i++){
+            list.add(candidates[i]);
+            backtracking(candidates,target-candidates[i],i,list,digits);
+            list.remove(list.size()-1); // backtrack
         }
     }
 
@@ -35,13 +38,24 @@ public class BankAccount {
         //Each digit of an account number can lie between 0 and 9 (both inclusive)
         //Generate account number having given number of 'digits' such that the sum of digits is equal to 'sum'
         //If it is not possible, throw "Account Number can not be generated" exception
-        String str = "";
-        int arr[] = {0,1,2,3,4,5,6,7,8,9};
-        generate(arr,digits,sum,0,str);
-        if(accountNumber=="")
+        String accountNo = "";
+        int arr[] = {1,2,3,4,5,6,7,8,9};
+        backtracking(arr,sum,0,new ArrayList<>(),digits);
+        for(int i=0;i<res.size();i++){
+            accountNo += res.get(i);
+        }
+
+        if(res.size()<digits){
+            int rem = digits - res.size();
+            while(rem -- >0){
+                accountNo += "0";
+            }
+        }
+
+        if(accountNo=="")
             throw new Exception("Account Number can not be generated");
         else
-            return accountNumber;
+            return accountNo;
     }
 
     public void deposit(double amount) {
