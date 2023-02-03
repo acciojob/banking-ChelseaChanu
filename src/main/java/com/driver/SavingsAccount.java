@@ -1,8 +1,8 @@
 package com.driver;
 
 public class SavingsAccount extends BankAccount{
-    double rate;
-    double maxWithdrawalLimit;
+    private double rate;
+    private double maxWithdrawalLimit;
 
     public SavingsAccount(String name, double balance, double maxWithdrawalLimit, double rate) {
         // minimum balance is 0 by default
@@ -39,5 +39,10 @@ public class SavingsAccount extends BankAccount{
         double amount = balance*total;
         return amount - balance;
     }
-
+    public double getRate() {
+        return rate;
+    }
+    public double getMaxWithdrawalLimit() {
+        return maxWithdrawalLimit;
+    }
 }
